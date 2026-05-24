@@ -4,9 +4,11 @@ import com.example.kafkademo.model.BestBidOffer;
 import com.example.kafkademo.model.BestBidOfferRequest;
 import lombok.SneakyThrows;
 import org.apache.hc.client5.http.config.ConnectionConfig;
+import org.apache.hc.client5.http.config.RequestConfig;
 import org.apache.hc.client5.http.impl.classic.HttpClientBuilder;
 import org.apache.hc.client5.http.impl.io.PoolingHttpClientConnectionManagerBuilder;
 import org.apache.hc.core5.util.Timeout;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.client.ClientHttpRequestFactory;
 import org.springframework.http.client.HttpComponentsClientHttpRequestFactory;
@@ -18,10 +20,13 @@ public class BestBidOfferService {
 
     private final RestTemplate restTemplate = new RestTemplate(getClientHttpRequestFactory());
 
+    @Value("${orderbook.base-url:http://localhost:8083}")
+    private String orderBookBaseUrl;
+
     @SneakyThrows
     public BestBidOffer getBestBidOffer(BestBidOfferRequest bestBidOfferRequest) {
         HttpEntity<BestBidOfferRequest> request = new HttpEntity<>(bestBidOfferRequest);
-        return restTemplate.postForObject("http://localhost:8083/order/bbo", request, BestBidOffer.class);
+        return restTemplate.postForObject(orderBookBaseUrl + "/order/bbo", request, BestBidOffer.class);
     }
 
     private ClientHttpRequestFactory getClientHttpRequestFactory() {
@@ -32,6 +37,9 @@ public class BestBidOfferService {
                 .build();
         var httpClient = HttpClientBuilder.create()
                 .setConnectionManager(connectionManager)
+                .setDefaultRequestConfig(RequestConfig.custom()
+                        .setResponseTimeout(Timeout.ofMilliseconds(5000))
+                        .build())
                 .build();
         return new HttpComponentsClientHttpRequestFactory(httpClient);
     }

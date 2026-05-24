@@ -79,7 +79,15 @@ curl -X POST http://localhost:8083/order/create \
     -d '{"symbol":"AAPL","quantity":100}'
 ```
 
-The `OrderConsumer` inside `quoteservice` will pick the message up. To see retry + DLT in action, inspect the consumer code (`quoteservice/src/main/java/com/example/kafkademo/consumer/OrderConsumer.java`) — the `@RetryableTopic(attempts = "3", backOff = @BackOff(delay = 5000, multiplier = 3.0))` annotation produces `order-retry-5000`, `order-retry-15000`, and `order-dlt` topics automatically. You can watch them at the Control Center UI: http://localhost:9021
+The `OrderConsumer` inside `quoteservice` will pick the message up. To trigger retry + DLT deliberately, send `symbol` as `DLT`:
+
+```bash
+curl -X POST http://localhost:8083/order/create \
+    -H 'Content-Type: application/json' \
+    -d '{"symbol":"DLT","quantity":100}'
+```
+
+The `@RetryableTopic(attempts = "3", backOff = @BackOff(delay = 5000, multiplier = 3.0))` annotation produces `order-retry-5000`, `order-retry-15000`, and `order-dlt` topics automatically. You can watch them at the Control Center UI: http://localhost:9021
 
 ## Ports
 

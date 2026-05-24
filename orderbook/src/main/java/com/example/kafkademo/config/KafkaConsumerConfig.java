@@ -5,6 +5,7 @@ import org.apache.kafka.clients.consumer.Consumer;
 import org.apache.kafka.clients.consumer.ConsumerConfig;
 import org.apache.kafka.clients.consumer.ConsumerRecord;
 import org.apache.kafka.common.serialization.StringDeserializer;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.kafka.annotation.EnableKafka;
@@ -23,13 +24,16 @@ import java.util.Map;
 @Slf4j
 public class KafkaConsumerConfig {
 
+    @Value("${spring.kafka.bootstrap-servers:127.0.0.1:9092}")
+    private String bootstrapServers;
+
     @Bean
     public ConsumerFactory<String, String> consumerFactory() {
         // Creating a Map of string-object pairs
         Map<String, Object> config = new HashMap<>();
 
         // Adding the Configuration
-        config.put(ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG, "127.0.0.1:9092");
+        config.put(ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG, bootstrapServers);
         config.put(ConsumerConfig.GROUP_ID_CONFIG, "group_id");
 
         // enable below property when you want to acknowledge msg manually

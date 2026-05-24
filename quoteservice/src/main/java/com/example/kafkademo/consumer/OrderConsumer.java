@@ -20,6 +20,9 @@ public class OrderConsumer {
     @KafkaListener(topics = "order", groupId = "group_id", containerFactory = "myConsumerFactory")
     public void consume(String msg, @Header(KafkaHeaders.RECEIVED_TOPIC) String topic) {
         System.out.println(msg +" from "+topic);
+        if (msg.contains("fail")) {
+            throw new IllegalStateException("Intentional failure for retry/DLT demo");
+        }
     }
 
     @DltHandler

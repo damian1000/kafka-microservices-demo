@@ -40,7 +40,10 @@ public class OrderBookController {
 
     @PostMapping("/create")
     public ResponseEntity<Long> createOrder(@RequestBody CreateOrderRequest createOrderRequest) {
-        eventPublisher.sendDataToTopic("order", "createOrderEvent");
+        String event = "DLT".equalsIgnoreCase(createOrderRequest.getSymbol())
+                ? "createOrderEvent-fail"
+                : "createOrderEvent";
+        eventPublisher.sendDataToTopic("order", event);
         return status(HttpStatus.CREATED).body(new Random().nextLong());
     }
 
