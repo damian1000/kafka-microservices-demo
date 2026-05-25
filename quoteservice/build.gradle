@@ -7,7 +7,7 @@ plugins {
 version = '1.0-SNAPSHOT'
 
 springBoot {
-    mainClass = 'com.example.kafkademo.QuoteServiceApplication'
+    mainClass = 'io.github.damian1000.kafkademo.QuoteServiceApplication'
 }
 
 java {
