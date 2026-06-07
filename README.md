@@ -1,6 +1,7 @@
 # Kafka Microservices Demo
 
 [![CI](https://github.com/damian1000/kafka-microservices-demo/actions/workflows/ci.yml/badge.svg)](https://github.com/damian1000/kafka-microservices-demo/actions/workflows/ci.yml)
+[![codecov](https://codecov.io/gh/damian1000/kafka-microservices-demo/graph/badge.svg)](https://codecov.io/gh/damian1000/kafka-microservices-demo)
 [![JDK](https://img.shields.io/badge/jdk-25-orange)](https://openjdk.org/projects/jdk/25/)
 [![Spring Boot](https://img.shields.io/badge/spring--boot-4.0.6-brightgreen)](https://spring.io/projects/spring-boot)
 [![Kafka](https://img.shields.io/badge/kafka-4.3.0-blue)](https://kafka.apache.org/)
