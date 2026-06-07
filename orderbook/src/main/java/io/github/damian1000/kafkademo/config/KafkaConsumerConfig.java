@@ -52,20 +52,29 @@ public class KafkaConsumerConfig {
     }
 
     @Bean(name = "myConsumerFactoryForException")
-    public ConcurrentKafkaListenerContainerFactory myConsumerFactoryForException() {
+    public ConcurrentKafkaListenerContainerFactory<String, String> myConsumerFactoryForException() {
         ConcurrentKafkaListenerContainerFactory<String, String> factory = new ConcurrentKafkaListenerContainerFactory<>();
         factory.setConsumerFactory(consumerFactory());
-        // enable below ContainerProperties when you want to acknowledge msg manually
-        //factory.getContainerProperties().setAckMode(ContainerProperties.AckMode.MANUAL_IMMEDIATE);
-        factory.setCommonErrorHandler(new CommonErrorHandler() {
-            public void handle(Exception e, List<ConsumerRecord<?, ?>> list, Consumer<?, ?> consumer, MessageListenerContainer messageListenerContainer) {
-                ConsumerRecord record = list.get(0);
-                log.info("exceptional data and topic {}-{}", record.value(), record.topic());
-                messageListenerContainer.stop();
-                log.info("consumer has been stopped for listener id : {}", messageListenerContainer.getListenerId());
-            }
-        });
+        factory.setCommonErrorHandler(loggingStopContainerErrorHandler());
         return factory;
+    }
+
+    static CommonErrorHandler loggingStopContainerErrorHandler() {
+        return new CommonErrorHandler() {
+            @Override
+            public void handleRemaining(Exception thrownException,
+                                        List<ConsumerRecord<?, ?>> records,
+                                        Consumer<?, ?> consumer,
+                                        MessageListenerContainer container) {
+                if (records.isEmpty()) {
+                    return;
+                }
+                ConsumerRecord<?, ?> first = records.get(0);
+                log.info("exceptional data and topic {}-{}", first.value(), first.topic());
+                container.stop();
+                log.info("consumer has been stopped for listener id : {}", container.getListenerId());
+            }
+        };
     }
 
 }
