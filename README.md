@@ -47,8 +47,17 @@ Two Spring Boot 4 microservices, Kafka 4.x, end-to-end retry + dead-letter handl
 
 ## Prerequisites
 
-- **JDK 25** (the Gradle toolchain will fetch one if needed, but having it locally is faster)
-- **Docker** (for the Kafka broker stack)
+- **JDK 25**
+- **Docker** (for the local broker stack and Testcontainers-based tests)
+
+### Java compatibility
+
+Java 25 is the supported baseline, not just the development JDK: both modules target Java 25 bytecode, so older runtimes are not supported. The checked-in Gradle wrapper pins the build tooling, but it does not install the JDK; install a JDK 25 distribution and make it available through `JAVA_HOME` or `PATH`.
+
+```bash
+java -version
+./gradlew --version
+```
 
 ## Quick start
 
@@ -117,7 +126,9 @@ The `@RetryableTopic(attempts = "3", backOff = @BackOff(delay = 5000, multiplier
 ./gradlew test
 ```
 
-Both modules have Spring Boot context-load tests that exercise a live broker — `docker compose up -d` must be running first.
+Most tests are isolated unit tests. Each module also has a Spring Boot context-load test that starts its own `apache/kafka:4.3.0` broker through Testcontainers. A working Docker daemon is required, but the Compose stack does not need to be running.
+
+The Compose stack is only needed for manually running the two services and observing their HTTP/Kafka workflow.
 
 ## Notes on design
 
