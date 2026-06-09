@@ -5,5 +5,4 @@
 - Add a transactional outbox: producer writes events in the same DB transaction as its state change; a separate publisher drains the outbox.
 - Replace stringified JSON payloads with Avro or Protobuf schemas and add compatibility checks.
 - Propagate correlation IDs end-to-end and emit OpenTelemetry traces.
-- Add consumer-lag / retry / DLT dashboards (Prometheus + Grafana).
 - Add failure-injection integration tests (broker disconnect, slow consumer).
