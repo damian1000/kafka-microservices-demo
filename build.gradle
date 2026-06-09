@@ -1,9 +1,11 @@
 plugins {
     id 'com.diffplug.spotless' version '7.0.4' apply false
+    id 'org.owasp.dependencycheck' version '12.1.0' apply false
 }
 
 subprojects {
     apply plugin: 'com.diffplug.spotless'
+    apply plugin: 'org.owasp.dependencycheck'
 
     spotless {
         java {
@@ -11,6 +13,19 @@ subprojects {
             removeUnusedImports()
             trimTrailingWhitespace()
             endWithNewline()
+        }
+    }
+
+    // OWASP dependency vulnerability scanner. Run: ./gradlew dependencyCheckAggregate
+    // Fails the build on any dependency with CVSS >= 7.0.
+    dependencyCheck {
+        failBuildOnCVSS = 7.0f
+        formats = ['HTML', 'JSON']
+        analyzers {
+            assemblyEnabled = false
+            nodeEnabled = false
+            nodeAuditEnabled = false
+            nuspecEnabled = false
         }
     }
 
