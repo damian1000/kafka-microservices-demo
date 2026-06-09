@@ -2,12 +2,14 @@
 
 ## Roadmap (prioritized)
 
-### P1 — fix README drift (cheap, do first)
+### P1 — done
 
-- **README claims `{"symbol":"DLT","quantity":100}` triggers retry+DLT.** The actual `OrderConsumer.consume()` (`quoteservice/.../consumer/OrderConsumer.java:25`) fails when the serialized message *contains the literal substring "fail"*. Either:
-  - Change the README example to send a payload whose serialized form contains "fail" (and explain it that way), or
-  - Change `OrderConsumer` to look at the parsed `symbol` field and fail when it equals `"DLT"` (matching the README narrative more precisely).
-- Verify every other README example actually triggers the behaviour it claims while you're in there.
+- `OrderConsumer` now matches the documented trigger: `msg.contains("DLT")`
+  fires on a payload whose `symbol` is `DLT`, matching the README example.
+  Test renamed to `payloadContainingDltSymbolThrowsToTriggerRetryAndDlt`.
+- The substring match is intentionally simple-stupid for a demo; a real
+  consumer would deserialize and inspect the parsed field. Worth noting
+  if anyone re-uses the pattern for production code.
 
 ### P2 — pick one production-semantics investment
 
