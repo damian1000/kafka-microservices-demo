@@ -22,7 +22,7 @@ public class OrderConsumer {
     @KafkaListener(topics = "order", groupId = "group_id", containerFactory = "myConsumerFactory")
     public void consume(String msg, @Header(KafkaHeaders.RECEIVED_TOPIC) String topic) {
         log.info("received {} from {}", msg, topic);
-        if (msg.contains("fail")) {
+        if (msg.contains("DLT")) {
             throw new IllegalStateException("Intentional failure for retry/DLT demo");
         }
     }

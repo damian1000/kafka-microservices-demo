@@ -22,15 +22,15 @@ class OrderConsumerTest {
     }
 
     @Test
-    void messageWithoutFailDoesNothingExtra() {
-        consumer.consume("createOrderEvent", "order");
+    void normalSymbolDoesNothingExtra() {
+        consumer.consume("{\"symbol\":\"AAPL\",\"quantity\":100}", "order");
         verifyNoInteractions(kafkaService);
     }
 
     @Test
-    void messageContainingFailThrowsToTriggerRetryAndDlt() {
+    void payloadContainingDltSymbolThrowsToTriggerRetryAndDlt() {
         IllegalStateException ex = assertThrows(IllegalStateException.class,
-                () -> consumer.consume("createOrderEvent-fail", "order"));
+                () -> consumer.consume("{\"symbol\":\"DLT\",\"quantity\":100}", "order"));
         org.junit.jupiter.api.Assertions.assertTrue(ex.getMessage().contains("Intentional failure"));
     }
 
