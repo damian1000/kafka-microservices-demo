@@ -25,10 +25,13 @@ jobs:
       - name: Set up Gradle
         uses: gradle/actions/setup-gradle@v4
 
-      - name: Build, test, and generate coverage report
+      - name: Spotless check
+        run: ./gradlew --no-daemon spotlessCheck
+
+      - name: Build, test, and enforce coverage
         # Tests use Testcontainers to spin up Apache Kafka 4.3.0 in Docker.
         # ubuntu-latest runners ship Docker preinstalled.
-        run: ./gradlew --no-daemon clean test jacocoTestReport
+        run: ./gradlew --no-daemon clean check
 
       - name: Upload coverage to Codecov
         uses: codecov/codecov-action@v5
