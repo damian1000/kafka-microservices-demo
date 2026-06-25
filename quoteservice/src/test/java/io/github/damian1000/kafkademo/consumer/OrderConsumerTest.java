@@ -4,7 +4,6 @@ import io.github.damian1000.kafkademo.service.KafkaService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
-import org.springframework.test.util.ReflectionTestUtils;
 
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.verifyNoInteractions;
@@ -17,8 +16,7 @@ class OrderConsumerTest {
     @BeforeEach
     void setUp() {
         kafkaService = Mockito.mock(KafkaService.class);
-        consumer = new OrderConsumer();
-        ReflectionTestUtils.setField(consumer, "service", kafkaService);
+        consumer = new OrderConsumer(kafkaService);
     }
 
     @Test
