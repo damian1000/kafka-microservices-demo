@@ -1,8 +1,8 @@
 package io.github.damian1000.kafkademo.consumer;
 
 import io.github.damian1000.kafkademo.service.KafkaService;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.kafka.annotation.BackOff;
 import org.springframework.kafka.annotation.DltHandler;
 import org.springframework.kafka.annotation.KafkaListener;
@@ -13,10 +13,10 @@ import org.springframework.stereotype.Component;
 
 @Component
 @Slf4j
+@RequiredArgsConstructor
 public class OrderConsumer {
 
-    @Autowired
-    private KafkaService service;
+    private final KafkaService service;
 
     @RetryableTopic(attempts = "3", backOff = @BackOff(delay = 5000, multiplier = 3.0))
     @KafkaListener(topics = "order", groupId = "group_id", containerFactory = "myConsumerFactory")
